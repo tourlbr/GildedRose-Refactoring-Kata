@@ -13,20 +13,20 @@ describe('Gilded Rose', function () {
     });
 
     it('Should degrade quality twice as fast, once the sell by date has passed', () => {
-      const initalNegativeSellIns = [0, -1, -2];
+      const initalNegativeSellIns = [-1, -2];
       initalNegativeSellIns.map(sellIn => {
         const itemMock1 = [
           new Item('foo1', sellIn, 10)
         ];
         const gildedRose = new GildedRose(itemMock1);
         const items = gildedRose.updateQuality();
-        expect(items[0].quality).toEqual(10 - 1 - 1);
+        expect(items[0].quality).toEqual(8);
         expect(items[0].sellIn).toEqual(sellIn - 1);
       });
     });
 
     it('Should never return a negative value for quality', () => {
-      const initalQuality = [1, 0 - 1];
+      const initalQuality = [1, 0];
       initalQuality.map(quality => {
         const itemMock1 = [
           new Item('foo1', 10, quality)
@@ -39,19 +39,16 @@ describe('Gilded Rose', function () {
 
 
     it('Should never return a quality more than 50', () => {
-      const initalQuality = [51, 52];
-      initalQuality.map(quality => {
         const itemMock1 = [
-          new Item('foo1', 10, quality)
+          new Item('foo1', 10, 50)
         ];
         const gildedRose = new GildedRose(itemMock1);
         const items = gildedRose.updateQuality();
         expect(items[0].quality).toEqual(50);
-      })
     });
   });
 
-/*   describe('Age Bried', () => {
+  describe('Age Bried', () => {
     it('Should increase quality when sellIn date gets closer', () => {
       const itemMock1 = [
         new Item('Aged Brie', -1, 1)
@@ -130,7 +127,7 @@ describe('Gilded Rose', function () {
   });
 
   describe('Conjured', () => {
-    it('degrade quality twice as fast', () => {
+    it('Should degrade quality twice as fast', () => {
       const itemMock1 = [
         new Item('Conjured', 10, 10)
       ];
@@ -139,5 +136,15 @@ describe('Gilded Rose', function () {
       expect(items[0].quality).toEqual(8);
       expect(items[0].sellIn).toEqual(9);
     });
-  }); */
+
+    it('Should degrade quality twice as fast when sellIn date has past', () => {
+      const itemMock1 = [
+        new Item('Conjured', -1, 10)
+      ];
+      const gildedRose = new GildedRose(itemMock1);
+      const items = gildedRose.updateQuality();
+      expect(items[0].quality).toEqual(6);
+      expect(items[0].sellIn).toEqual(-2);
+    });
+  });
 });

@@ -96,7 +96,7 @@ export class GildedRose {
   private updateSulfurasItem(item: Item) {
     item.quality = 80;
 
-    return item
+    return item;
   }
 
   private updateConjuredItem(item: Item) {
@@ -105,13 +105,13 @@ export class GildedRose {
     }
 
     if (item.sellIn < 0 && (item.quality > 2 && item.quality < MAX_QUALITY)) {
-      item.quality = item.quality - 2
+      item.quality = item.quality - 2;
     }
 
     item.sellIn = item.sellIn - 1;
   }
 
   private isBetweenMinMaxQuality(quality: number): boolean {
-    return quality > MIN_QUALITY && quality < MAX_QUALITY
+    return quality > MIN_QUALITY && quality < MAX_QUALITY;
   }
 }
