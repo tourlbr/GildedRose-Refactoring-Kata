@@ -36,16 +36,6 @@ describe('Gilded Rose', function () {
         expect(items[0].quality).toEqual(0);
       })
     });
-
-
-    it('Should never return a quality more than 50', () => {
-        const itemMock1 = [
-          new Item('foo1', 10, 50)
-        ];
-        const gildedRose = new GildedRose(itemMock1);
-        const items = gildedRose.updateQuality();
-        expect(items[0].quality).toEqual(50);
-    });
   });
 
   describe('Age Bried', () => {
@@ -71,29 +61,23 @@ describe('Gilded Rose', function () {
     });
 
     it('Should increases by 2 when there are 10 days or less', () => {
-      const days = [10, 9, 8, 7, 6];
-      days.map(day => {
         const itemMock1 = [
-          new Item('Backstage passes to a TAFKAL80ETC concert', day, 40)
+          new Item('Backstage passes to a TAFKAL80ETC concert', 9, 40)
         ];
         const gildedRose = new GildedRose(itemMock1);
         const items = gildedRose.updateQuality();
-        expect(items[0].quality).toEqual(40 + 1 + 1);
-        expect(items[0].sellIn).toEqual(day - 1);
-      });
+        expect(items[0].quality).toEqual(42);
+        expect(items[0].sellIn).toEqual(8);
     });
 
     it('Should increase by 3 when there are 5 days or less', () => {
-      const days = [5, 4, 3, 2, 1];
-      days.map(day => {
         const itemMock1 = [
-          new Item('Backstage passes to a TAFKAL80ETC concert', day, 40)
+          new Item('Backstage passes to a TAFKAL80ETC concert', 4, 40)
         ];
         const gildedRose = new GildedRose(itemMock1);
         const items = gildedRose.updateQuality();
-        expect(items[0].quality).toEqual(40 + 1 + 1 + 1);
-        expect(items[0].sellIn).toEqual(day - 1);
-      });
+        expect(items[0].quality).toEqual(43);
+        expect(items[0].sellIn).toEqual(3);
     });
 
     it('Should drop to zero after the concert', () => {

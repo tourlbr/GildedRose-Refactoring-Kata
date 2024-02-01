@@ -1,9 +1,9 @@
 export class Item {
-  name: string;
-  sellIn: number;
-  quality: number;
+  public name: string;
+  public sellIn: number;
+  public quality: number;
 
-  constructor(name, sellIn, quality) {
+  constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
     this.sellIn = sellIn;
     this.quality = quality;
@@ -21,7 +21,7 @@ const MAX_QUALITY = 50;
 const MIN_QUALITY = 0;
 
 export class GildedRose {
-  items: Array<Item>;
+  protected items: Array<Item>;
 
   constructor(items = [] as Array<Item>) {
     this.items = items;
@@ -51,46 +51,43 @@ export class GildedRose {
     return this.items;
   }
 
+  // Update items
+  // ============
   private updateNormalItem(item: Item) {
-    if (this.isBetweenMinMaxQuality(item.quality)) {
-      item.quality = item.quality - 1;
-    }
+    this.decrementProperty(item, 'quality');
 
-    if (item.sellIn < 0 && this.isBetweenMinMaxQuality(item.quality)) {
-      item.quality = item.quality - 1;
+    if (item.sellIn < 0) {
+      this.decrementProperty(item, 'quality');
     }
-
-    item.sellIn = item.sellIn - 1;
+    
+    this.decreaseSellIn(item);
   }
 
   private updateAgedBrieItem(item: Item) {
-    if (item.quality < MAX_QUALITY) {
-      item.quality = item.quality + 1;
+    this.incrementProperty(item, 'quality');
+    
+    if (item.sellIn < 0) {
+      this.incrementProperty(item, 'quality');
     }
-
-    if (item.sellIn < 0 && item.quality < MAX_QUALITY) {
-      item.quality = item.quality + 1;
-    }
-
-    item.sellIn = item.sellIn - 1;
+    
+    this.decreaseSellIn(item);
   }
 
   private updateBackstagePassesItem(item: Item) {
     if (item.sellIn < 0) {
       item.quality = 0;
-    } else if (item.sellIn >= 0 && item.quality < MAX_QUALITY) {
-      item.quality = item.quality + 1;
-
-      if (item.sellIn <= 10 && item.quality < MAX_QUALITY) {
-        item.quality = item.quality + 1;
+    } else {
+      this.incrementProperty(item, 'quality');
+      if (item.sellIn <= 10) {
+        this.incrementProperty(item, 'quality');
       }
 
-      if (item.sellIn <= 5 && item.quality < MAX_QUALITY) {
-        item.quality = item.quality + 1;
+      if (item.sellIn <= 5) {
+        this.incrementProperty(item, 'quality');
       }
     }
 
-    item.sellIn = item.sellIn - 1;
+    this.decreaseSellIn(item);
   }
 
   private updateSulfurasItem(item: Item) {
@@ -100,18 +97,32 @@ export class GildedRose {
   }
 
   private updateConjuredItem(item: Item) {
-    if (item.quality > (MIN_QUALITY + 2) && item.quality < MAX_QUALITY) {
-      item.quality = item.quality - 2;
+    if (item.quality > (MIN_QUALITY + 2)) {
+      this.decrementProperty(item, 'quality', 2);
     }
 
-    if (item.sellIn < 0 && (item.quality > 2 && item.quality < MAX_QUALITY)) {
-      item.quality = item.quality - 2;
+    if (item.sellIn < 0 && item.quality > 2) {
+      this.decrementProperty(item, 'quality', 2);
     }
 
-    item.sellIn = item.sellIn - 1;
+    this.decreaseSellIn(item);
   }
 
-  private isBetweenMinMaxQuality(quality: number): boolean {
-    return quality > MIN_QUALITY && quality < MAX_QUALITY;
+  // Helpers
+  // ============
+  private decrementProperty(item: Item, property: string, quantity: number = 1) {
+    if (item[property] > MIN_QUALITY) {
+      item[property] -= quantity;
+    }
+  }
+
+  private incrementProperty(item: Item, property: string, quantity: number = 1) {
+    if (item[property] < MAX_QUALITY) {
+      item[property] += quantity;
+    }
+  }
+
+  private decreaseSellIn(item: Item) {
+    item.sellIn = item.sellIn - 1;
   }
 }
